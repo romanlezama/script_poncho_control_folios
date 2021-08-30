@@ -1,0 +1,7 @@
+.is-invalid{
+	margin-bottom: 0;
+	color: #dc3545;
+}
+.invalid-feedback{
+	padding-left: 15px;
+}

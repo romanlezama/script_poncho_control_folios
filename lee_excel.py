@@ -2,13 +2,17 @@
 import sys, pyexcel, re,json
 # Leer el documento de excel
 def read_excel_sheets(sheet_name=None, file_url=None, all_sheets=False):
+    #if True:
     try:
         book_dict = pyexcel.get_book_dict(file_name=file_url)
         if all_sheets:
             dict_all_sheets = {}
             for name_sheet in book_dict:
                 records = book_dict[name_sheet]
-                header = records.pop(0)
+                if records:
+                    header = records.pop(0)
+                else:
+                    header = []
                 try:
                     header = [str(col).lower().replace(u'\xa0',u' ').strip().replace(' ', '_') for col in header]
                 except UnicodeEncodeError:
@@ -18,7 +22,7 @@ def read_excel_sheets(sheet_name=None, file_url=None, all_sheets=False):
                     'records': records
                 }
             return dict_all_sheets
-        if book_dict.has_key(sheet_name):
+        if book_dict.get(sheet_name):
             records = book_dict[sheet_name]
             header = records.pop(0)
             try:
@@ -146,7 +150,7 @@ def process_notas_sheet( content_sheet ):
                             continue
                     nameClient = get_client_name( c.lower() )
                     dict_ventas_clientes.update({
-                        nameClient: monto_vendido
+                        nameClient.upper(): monto_vendido
                     })
             except:
                 continue
@@ -161,7 +165,7 @@ if __name__ == "__main__":
     
     # Dirección donde está guardado el Excel
     #name_file = 'CUENTA DEL DIA MIERCOLES 18  DE AGOSTO DEL  2021'
-    file_url = '/home/roman/script_poncho/excel_files/{}.xlsx'.format(name_file)
+    file_url = 'C:/xampp/htdocs/sistemaponcho/excel_files/{}.xlsx'.format(name_file)
     
     # Obtengo un diccionario con las páginas y el contenido de cada una
     dict_all_sheets_excel = read_excel_sheets(file_url=file_url, all_sheets=True)
